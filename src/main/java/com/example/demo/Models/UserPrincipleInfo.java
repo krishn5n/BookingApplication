@@ -19,13 +19,14 @@ public class UserPrincipleInfo implements UserDetails {
     private String username;
     private String password;
     private String role;
+    private String refreshToken;
 
 
     public UserPrincipleInfo(User obj) {
         this.password = obj.getPasswordHash();
         this.username = obj.getEmail();
         this.role = obj.getRole().name();
-
+        this.refreshToken = obj.getRefreshToken();
     }
 
     @Override

@@ -16,4 +16,5 @@ public class EventController {
     public void addEvent(@RequestBody EventDTO eventDetails){
         System.out.println(eventDetails);
     }
+
 }

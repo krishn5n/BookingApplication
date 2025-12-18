@@ -1,15 +1,15 @@
 package com.example.demo;
 
-import com.example.demo.Repository.UserRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.Models.UserDTO;
+import com.example.demo.Security.CustomUserDetailService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @SpringBootApplication
 public class DemoApplication implements CommandLineRunner {
-	@Autowired
-	private UserRepo userrep;
 
 	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);
@@ -17,8 +17,8 @@ public class DemoApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String[] args) {
-		Long val = 1L;
-		System.out.println(userrep.findById(val));
+//		UserDetails userDetails = applicationContext.getBean(CustomUserDetailService.class).loadUserByUsername(email);
+//		UserDTO userDTO = (UserDTO) userDetails;
 	}
 
 }

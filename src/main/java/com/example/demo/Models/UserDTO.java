@@ -17,8 +17,18 @@ public class UserDTO {
     private String password;
     private String password_hash;
     private UserRole role;
+    private String refreshToken;
 
-    public User convertToUser(){
-        return new User(name,phone,email,password_hash,role);
+    public UserDTO(UserRole role, String password_hash, String password, String email, String phone, String name) {
+        this.role = role;
+        this.password_hash = password_hash;
+        this.password = password;
+        this.email = email;
+        this.phone = phone;
+        this.name = name;
+    }
+
+    public User convertToUserEntity(){
+        return new User(name,phone,email,password_hash,role,refreshToken);
     }
 }

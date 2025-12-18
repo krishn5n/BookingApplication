@@ -27,7 +27,8 @@ public class UserService {
     public String signupService(UserDTO userdata){
         try{
             userdata.setPassword_hash(passwordHasher.encode(userdata.getPassword()));
-            User rowValue = userdata.convertToUser();
+            User rowValue = userdata.convertToUserEntity();
+            rowValue.setRefreshToken(jwtService.createRefreshToken(userdata.getEmail()));
             userRepo.save(rowValue);
             return jwtService.createAccessToken(userdata.getEmail(),userdata.getRole().name());
         }
@@ -37,22 +38,29 @@ public class UserService {
         }
     }
 
-    public String signInFunction(UserDTO userDetails){
+    public String signInFunction(UserDTO userData){
         try{
-            Authentication authentication =  authManager.authenticate(new UsernamePasswordAuthenticationToken(userDetails.getEmail(), userDetails.getPassword()));
+            Authentication authentication =  authManager.authenticate(new UsernamePasswordAuthenticationToken(userData.getEmail(), userData.getPassword()));
             String roleName = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).filter(auth -> !auth.startsWith("FACTOR_")).toList().get(0);
-            if(authentication.isAuthenticated()){
-                return jwtService.createAccessToken(userDetails.getEmail(),roleName);
-            };
-            return "";
+            String refreshToken = userData.getRefreshToken();
+            if (!authentication.isAuthenticated()) {
+                return null;
+            }
+
+            if(!jwtService.isTokenExpired(refreshToken)) {
+                    return jwtService.createAccessToken(userData.getEmail(), roleName);
+            }
+            else{
+                String newRefreshToken = jwtService.createRefreshToken(userData.getEmail());
+                User rowValue = userData.convertToUserEntity();
+                rowValue.setRefreshToken(newRefreshToken);
+                return jwtService.createAccessToken(userData.getEmail(), roleName);
+            }
         }
         catch(Exception e){
             System.out.println(e);
-            return "";
+            return null;
         }
     }
 
-    public void test() {
-        System.out.println("Chumma");
-    }
 }

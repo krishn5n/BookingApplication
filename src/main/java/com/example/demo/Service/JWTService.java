@@ -1,11 +1,13 @@
 package com.example.demo.Service;
 
+import com.example.demo.Models.UserDTO;
+import com.example.demo.Repository.UserRepo;
+import com.example.demo.Tables.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.KeyGenerator;
@@ -17,8 +19,11 @@ import java.util.function.Function;
 @Service
 public class JWTService {
     private String keyString;
-    public JWTService(){
+    private UserRepo userRepo;
+
+    public JWTService(UserRepo userRepo){
         try {
+            this.userRepo = userRepo;
             KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256");
             SecretKey secretKey = keyGenerator.generateKey();
             this.keyString = Base64.getEncoder().encodeToString(secretKey.getEncoded());
@@ -54,9 +59,13 @@ public class JWTService {
                 .compact();
     }
 
-    public String getRoles(String token){
-        Claims claims = extractAllClaims(token);
-        return claims.get("roles").toString();
+    public String getRoleFromToken(String token){
+        try {
+            Claims claims = extractAllClaims(token);
+            return claims.get("role",String.class);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private SecretKey getKey(){
@@ -65,17 +74,17 @@ public class JWTService {
     }
 
     //Checking validity of token
-    public boolean validateToken(String token, UserDetails userDetails, String email) {
-        boolean resultOne = email.equals(userDetails.getUsername());
-        boolean resultTwo =  resultOne && !isTokenExpired(token);
-        if(!resultTwo){
-            //You check the refresh token
-            int a  = 1+1;
+    public boolean validateTokenClaims(String token) {
+        try{
+            final Claims claims = extractAllClaims(token);
+            return true;
         }
-        return resultTwo;
+        catch (Exception e){
+            return false;
+        }
     }
 
-    private boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
@@ -90,17 +99,33 @@ public class JWTService {
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimResolver.apply(claims);
+        try {
+            final Claims claims = extractAllClaims(token);
+            return claimResolver.apply(claims);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(getKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+        try {
+            return Jwts.parser()
+                    .verifyWith(getKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (JwtException | IllegalArgumentException e) {
+            return null;
+        }
     }
 
-
+    public String refreshAccessToken(UserDTO userData) {
+        User userEntityData = userRepo.findByEmail(userData.getEmail());
+        if(!isTokenExpired(userEntityData.getRefreshToken())){
+            return createAccessToken(userData.getEmail(), userData.getRole().name());
+        }
+        else{
+            return null;
+        }
+    }
 }

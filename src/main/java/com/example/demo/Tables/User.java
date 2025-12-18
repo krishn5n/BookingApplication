@@ -37,15 +37,15 @@ public class User {
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private UserRole role;
 
-//    @Column(nullable = false, name = "refresh_token")
-//    private String refreshToken;
+    @Column(nullable = false, name = "refresh_token")
+    private String refreshToken;
 
-    public User(String name, String phone, String email, String passwordHash, UserRole role){
+    public User(String name, String phone, String email, String passwordHash, UserRole role, String refreshToken ){
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.passwordHash = passwordHash;
         this.role = role;
-//        this.refreshToken = refreshToken;
+        this.refreshToken = refreshToken;
     }
 }
