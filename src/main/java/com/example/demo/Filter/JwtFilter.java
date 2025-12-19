@@ -37,14 +37,21 @@ public class JwtFilter extends OncePerRequestFilter {
             String token = null;
             String email = null;
 
+            //system.out.println("We at least here with request "+authHeader);
+
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 token = authHeader.substring(7);
                 email = jwtService.getEmail(token);
             }
 
+            //system.out.println(token+" "+email);
+
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                //system.out.println("Email aint null and we in");
+                //system.out.println("Token expiration is "+jwtService.isTokenExpired(token)+" validating claims for alter "+ jwtService.validateTokenClaims(token));
                 if (!jwtService.isTokenExpired(token) && jwtService.validateTokenClaims(token)) {
                     String role = jwtService.getRoleFromToken(token);
+                    //system.out.println(email+" "+token+" "+role);
                     UserDetails userDetails = User.builder()
                             .username(email)
                             .password("") // Not needed for stateless JWT
