@@ -1,0 +1,22 @@
+package com.example.demo.Models;
+
+import com.example.demo.Tables.VenueEntity;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class VenueDTO {
+    private Long id;
+    private String name;
+    private String city;
+    private Double latitude;
+    private Double longitude;
+    private String location;
+
+    public VenueEntity convertToVenueEntity(){
+        return new VenueEntity(name,location,city,latitude,longitude);
+    }
+}
