@@ -32,8 +32,6 @@ public class VenueController {
         }
     }
 
-    //TODO - Make the function names to be Venues and not Events
-
     @PreAuthorize("hasAuthority('A')")
     @PostMapping("/add")
     public ResponseEntity<String> addVenue(@RequestBody VenueDTO venueDetails){

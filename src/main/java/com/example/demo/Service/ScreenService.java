@@ -32,7 +32,6 @@ public class ScreenService {
     }
 
     public void addScreen(ScreenDTO addDetails) {
-        System.out.println("Screen DTO is "+addDetails);
         long venueId = addDetails.getVenueId();
         VenueEntity venueEntity = venueRepo.getReferenceById(venueId);
         ScreenEntity screenEntity = new ScreenEntity(venueEntity, addDetails.getName());
@@ -40,15 +39,12 @@ public class ScreenService {
         screenRepo.save(screenEntity);
     }
 
+    //TODO - Maybe work on the update screen details
     public void updateScreen(Map<String, String> modifyDetails) {
         return;
     }
 
-    public void deleteVenue(ScreenDTO screenDTO) {
+    public void deleteScreen(ScreenDTO screenDTO) {
         screenRepo.findById(screenDTO.getId()).ifPresent(screenRepo::delete);
-    }
-
-    public void deleteScreen(ScreenDTO deleteDetails) {
-        return;
     }
 }

@@ -71,7 +71,6 @@ public class VenueService {
         venueRepo.findById(venueDTO.getId()).ifPresent(venueRepo::delete);
     }
 
-    //TODO Work on making a filter using specification api provided you have the time
     @Transactional
     public List<VenueDTO> getVenuesByName(Map<String,String> filterVariables) {
         List<VenueEntity> venueEntities =  venueRepo.findByNameContaining(filterVariables.get("name"));
