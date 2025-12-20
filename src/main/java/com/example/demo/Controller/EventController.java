@@ -1,8 +1,7 @@
 package com.example.demo.Controller;
 
-import com.example.demo.Models.EventDTO;
+import com.example.demo.Models.DTO.EventDTO;
 import com.example.demo.Service.EventService;
-import com.example.demo.Tables.EventEntity;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,13 +22,13 @@ public class EventController {
 
     @PreAuthorize("hasAnyAuthority('U','A')")
     @GetMapping("/get")
-    public ResponseEntity<List<EventEntity>> getEvents(){
+    public ResponseEntity<List<EventDTO>> getEvents(){
         try {
-            List<EventEntity> retrunList = eventService.getEvents();
+            List<EventDTO> retrunList = eventService.getEvents();
             return new ResponseEntity<>(retrunList,HttpStatusCode.valueOf(200));
         } catch (Exception e) {
-            List<EventEntity> returnList = new ArrayList<>();
-            return new ResponseEntity<List<EventEntity>>(returnList,HttpStatusCode.valueOf(500));
+            List<EventDTO> returnList = new ArrayList<>();
+            return new ResponseEntity<List<EventDTO>>(returnList,HttpStatusCode.valueOf(500));
         }
     }
 

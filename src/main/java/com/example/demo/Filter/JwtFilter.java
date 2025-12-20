@@ -1,8 +1,6 @@
 package com.example.demo.Filter;
 
-import com.example.demo.Models.UserDTO;
 import com.example.demo.Repository.UserRepo;
-import com.example.demo.Security.CustomUserDetailService;
 import com.example.demo.Service.JWTService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

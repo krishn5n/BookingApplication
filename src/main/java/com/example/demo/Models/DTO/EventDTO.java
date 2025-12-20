@@ -1,14 +1,10 @@
-package com.example.demo.Models;
+package com.example.demo.Models.DTO;
 
+import com.example.demo.Models.EventRatingEnum;
 import com.example.demo.Tables.EventEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 @Data
 @AllArgsConstructor
@@ -20,8 +16,9 @@ public class EventDTO {
     private String language;
     private EventRatingEnum rating;
     private String desc;
+    private Double duration;
 
     public EventEntity convertToEventEntity(){
-        return new EventEntity(this.name, this.genre, this.desc, this.language, this.rating);
+        return new EventEntity(this.name, this.genre, this.desc, this.language, this.rating,this.duration);
     }
 }

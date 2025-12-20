@@ -1,6 +1,6 @@
 package com.example.demo.Service;
 
-import com.example.demo.Models.UserDTO;
+import com.example.demo.Models.DTO.UserDTO;
 import com.example.demo.Repository.UserRepo;
 import com.example.demo.Tables.User;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,9 +27,13 @@ public class UserService {
     public String signupService(UserDTO userdata){
         try{
             userdata.setPassword_hash(passwordHasher.encode(userdata.getPassword()));
+            System.out.println("Password hash set "+userdata.getPassword_hash());
             User rowValue = userdata.convertToUserEntity();
+            System.out.println("Converted to user entity");
             rowValue.setRefreshToken(jwtService.createRefreshToken(userdata.getEmail()));
+            System.out.println("Made a refresh token");
             userRepo.save(rowValue);
+            System.out.println("Row value saved");
             return jwtService.createAccessToken(userdata.getEmail(),userdata.getRole().name());
         }
         catch (Exception e){

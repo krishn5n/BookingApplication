@@ -1,4 +1,4 @@
-package com.example.demo.Models;
+package com.example.demo.Models.DTO;
 
 import com.example.demo.Tables.VenueEntity;
 import lombok.AllArgsConstructor;

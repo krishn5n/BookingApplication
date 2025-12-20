@@ -1,6 +1,6 @@
 package com.example.demo.Service;
 
-import com.example.demo.Models.UserDTO;
+import com.example.demo.Models.DTO.UserDTO;
 import com.example.demo.Repository.UserRepo;
 import com.example.demo.Tables.User;
 import io.jsonwebtoken.Claims;

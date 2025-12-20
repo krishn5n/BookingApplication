@@ -1,11 +1,12 @@
 package com.example.demo.Service;
 
-import com.example.demo.Models.EventDTO;
+import com.example.demo.Models.DTO.EventDTO;
 import com.example.demo.Repository.EventRepo;
 import com.example.demo.Tables.EventEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,8 +24,13 @@ public class EventService {
         eventRepo.save(eventEntity);
     }
 
-    public List<EventEntity> getEvents() {
-        return eventRepo.findAll();
+    public List<EventDTO> getEvents() {
+        List<EventEntity> eventEntities =eventRepo.findAll();
+        List<EventDTO> returnList = new ArrayList<>();
+        for(EventEntity eventEntity: eventEntities){
+            returnList.add(eventEntity.convertToDTO());
+        }
+        return returnList;
     }
 
     public void updateEvent(Map<String,String> updateDetails) {

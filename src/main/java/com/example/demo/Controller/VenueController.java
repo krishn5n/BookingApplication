@@ -1,8 +1,7 @@
 package com.example.demo.Controller;
 
-import com.example.demo.Models.VenueDTO;
-import com.example.demo.Security.VenueService;
-import com.example.demo.Tables.VenueEntity;
+import com.example.demo.Models.DTO.VenueDTO;
+import com.example.demo.Service.VenueService;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,20 +22,21 @@ public class VenueController {
 
     @PreAuthorize("hasAnyAuthority('U','A')")
     @GetMapping("/get")
-    public ResponseEntity<List<VenueEntity>> getVenues(){
+    public ResponseEntity<List<VenueDTO>> getVenues(){
         try {
-            List<VenueEntity> retrunList = venueService.getVenues();
+            List<VenueDTO> retrunList = venueService.getVenues();
             return new ResponseEntity<>(retrunList, HttpStatusCode.valueOf(200));
         } catch (Exception e) {
-            List<VenueEntity> returnList = new ArrayList<>();
-            return new ResponseEntity<List<VenueEntity>>(returnList,HttpStatusCode.valueOf(500));
+            List<VenueDTO> returnList = new ArrayList<>();
+            return new ResponseEntity<List<VenueDTO>>(returnList,HttpStatusCode.valueOf(500));
         }
     }
 
+    //TODO - Make the function names to be Venues and not Events
 
     @PreAuthorize("hasAuthority('A')")
     @PostMapping("/add")
-    public ResponseEntity<String> addEvent(@RequestBody VenueDTO venueDetails){
+    public ResponseEntity<String> addVenue(@RequestBody VenueDTO venueDetails){
         try {
             venueService.addVenue(venueDetails);
             return new ResponseEntity<>(HttpStatusCode.valueOf(200));
@@ -48,24 +48,38 @@ public class VenueController {
 
     @PreAuthorize("hasAuthority('A')")
     @PostMapping("/modify")
-    public ResponseEntity<Boolean> modifyEvent(@RequestBody Map<String,String> venueDetails){
+    public ResponseEntity<String> modifyVenue(@RequestBody Map<String,String> venueDetails){
         try{
             venueService.updateVenue(venueDetails);
-            return new ResponseEntity<>(true,HttpStatusCode.valueOf(200));
+            return new ResponseEntity<>("success",HttpStatusCode.valueOf(200));
         } catch (Exception e) {
-            return new ResponseEntity<>(false,HttpStatusCode.valueOf(500));
+            String retval = "Error at Modifying Event " + e.getMessage();
+            return new ResponseEntity<>(retval,HttpStatusCode.valueOf(500));
         }
     }
 
     @PreAuthorize("hasAuthority('A')")
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteEvent(@RequestBody VenueDTO venueDTO){
+    public ResponseEntity<String> deleteVenue(@RequestBody VenueDTO venueDTO){
         try {
-            venueService.deleteEvent(venueDTO);
+            venueService.deleteVenue(venueDTO);
             return new ResponseEntity<>("Successful",HttpStatusCode.valueOf(200));
         }
         catch (Exception e){
             return new ResponseEntity<>(e.getMessage(),HttpStatusCode.valueOf(500));
+        }
+    }
+
+
+    @PreAuthorize("hasAnyAuthority('U','A')")
+    @GetMapping("/get/search")
+    public ResponseEntity<List<VenueDTO>> getVenueByName(@RequestParam Map<String,String> searchDetails) {
+        try {
+            List<VenueDTO> retrunList = venueService.getVenuesByName(searchDetails);
+            return new ResponseEntity<>(retrunList, HttpStatusCode.valueOf(200));
+        } catch (Exception e) {
+            List<VenueDTO> returnList = new ArrayList<>();
+            return new ResponseEntity<List<VenueDTO>>(returnList,HttpStatusCode.valueOf(500));
         }
     }
 

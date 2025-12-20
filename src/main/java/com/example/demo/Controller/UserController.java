@@ -1,6 +1,6 @@
 package com.example.demo.Controller;
 
-import com.example.demo.Models.UserDTO;
+import com.example.demo.Models.DTO.UserDTO;
 import com.example.demo.Service.JWTService;
 import com.example.demo.Service.UserService;
 import org.springframework.http.ResponseEntity;

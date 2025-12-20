@@ -1,5 +1,6 @@
-package com.example.demo.Models;
+package com.example.demo.Models.DTO;
 
+import com.example.demo.Models.UserRole;
 import com.example.demo.Tables.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
