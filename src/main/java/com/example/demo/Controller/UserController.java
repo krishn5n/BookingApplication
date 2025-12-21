@@ -22,13 +22,22 @@ public class UserController {
 
     @PostMapping("/signup")
     public String signup(@RequestBody UserDTO userdata){
-        System.out.printf("At Singup Controller we have"+userdata);
-        return userService.signupService(userdata);
+        try {
+            System.out.printf("At Singup Controller we have" + userdata);
+            return userService.signupService(userdata);
+        }
+        catch (Exception e){
+            return e.getMessage();
+        }
     }
 
     @PostMapping("/signin")
     public String signIn(@RequestBody UserDTO userDetails){
-        return userService.signInFunction(userDetails);
+        try {
+            return userService.signInFunction(userDetails);
+        } catch (Exception e) {
+            return e.getMessage();
+        }
     }
 
     @PostMapping("/refresh")

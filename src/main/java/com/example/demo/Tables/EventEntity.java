@@ -2,12 +2,16 @@ package com.example.demo.Tables;
 
 import com.example.demo.Models.DTO.EventDTO;
 import com.example.demo.Models.EventRatingEnum;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -38,6 +42,11 @@ public class EventEntity {
 
     @Column(nullable = false, name = "duration")
     private Double duration;
+
+
+    @OneToMany(mappedBy = "eventEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<ShowEntity> shows = new ArrayList<>();
 
     public EventEntity(String name, String genre, String desc, String language, EventRatingEnum rating, Double duration) {
         this.name = name;

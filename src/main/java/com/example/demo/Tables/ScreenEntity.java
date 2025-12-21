@@ -20,14 +20,13 @@ public class ScreenEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "venue_id", nullable = false)
-    @JsonBackReference
-    private VenueEntity venueId;
+    private VenueEntity venue;
 
     @Column(nullable = false, name = "name")
     private String name;
 
-    public ScreenEntity(VenueEntity venueId, String name){
-        this.venueId = venueId;
+    public ScreenEntity(VenueEntity venue, String name){
+        this.venue = venue;
         this.name = name;
     }
 
@@ -40,6 +39,6 @@ public class ScreenEntity {
     }
 
     public ScreenDTO convertToDTO(){
-        return new ScreenDTO(id,name,venueId.getId());
+        return new ScreenDTO(id,name,venue.getId());
     }
 }

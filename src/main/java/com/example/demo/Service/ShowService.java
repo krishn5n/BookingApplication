@@ -1,7 +1,6 @@
 package com.example.demo.Service;
 
-import com.example.demo.Models.DTO.ScreenDTO;
-import com.example.demo.Models.DTO.ShowDTO;
+import com.example.demo.Models.DTO.*;
 import com.example.demo.Repository.EventRepo;
 import com.example.demo.Repository.ScreenRepo;
 import com.example.demo.Repository.ShowRepo;
@@ -93,11 +92,18 @@ public class ShowService {
     }
 
     //Getters
-    public List<ShowDTO> getShowsByEvent(ShowDTO showDTO){
-        List<ShowEntity> showEntities = showRepo.findByEventEntityId(showDTO.getEventId());
-        List<ShowDTO> returnValue = new ArrayList<>();
+    public List<AllDetailsDTO> getShowsByEvent(Long eventId){
+        List<ShowEntity> showEntities = showRepo.findAllDetailsUsingEventId(eventId);
+        List<AllDetailsDTO> returnValue = new ArrayList<>();
+
         for(ShowEntity showEntity: showEntities){
-            returnValue.add(showEntity.convertToDTO());
+            EventDTO eventDTO = showEntity.getEventEntity().convertToDTO();
+            ScreenDTO screenDTO = showEntity.getScreenEntity().convertToDTO();
+            VenueDTO venueDTO = showEntity.getScreenEntity().getVenue().convertToDTO();
+            ShowDTO showDTO = showEntity.convertToDTO();
+            LocationDetailsDTO locationDetailsDTO = new LocationDetailsDTO(venueDTO,screenDTO);
+            AllDetailsDTO allDetailsDTO = new AllDetailsDTO(locationDetailsDTO,eventDTO,showDTO);
+            returnValue.add(allDetailsDTO);
         }
         return returnValue;
     }

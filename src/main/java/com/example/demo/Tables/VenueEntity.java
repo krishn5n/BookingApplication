@@ -34,7 +34,7 @@ public class VenueEntity {
     @Column(nullable = false)
     private String location;
 
-    @OneToMany(mappedBy = "venueId", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "venue", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<ScreenEntity> screens = new ArrayList<>();
 

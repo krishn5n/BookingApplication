@@ -1,5 +1,7 @@
 package com.example.demo.Controller;
 
+import com.example.demo.Models.DTO.AllDetailsDTO;
+import com.example.demo.Models.DTO.EventDTO;
 import com.example.demo.Models.DTO.ShowDTO;
 import com.example.demo.Service.ShowService;
 import org.springframework.http.HttpStatusCode;
@@ -78,16 +80,15 @@ public class ShowController implements ControllerInterface<ShowDTO> {
     }
 
     @PreAuthorize("hasAnyAuthority('A','U')")
-    @GetMapping("/get/name")
-    public ResponseEntity<List<ShowDTO>> getByName(@RequestBody ShowDTO showDTO){
+    @GetMapping("/get/{eventId}")
+    public ResponseEntity<List<AllDetailsDTO>> getByName(@PathVariable Long eventId){
         try{
-            List<ShowDTO> returnvalue = showService.getShowsByEvent(showDTO);
+            List<AllDetailsDTO> returnvalue = showService.getShowsByEvent(eventId);
             return new ResponseEntity<>(returnvalue,HttpStatusCode.valueOf(200));
         } catch (Exception e) {
             System.out.println("Error in getting show with eventId "+e.getMessage());
-            List<ShowDTO> returnValue = new ArrayList<>();
+            List<AllDetailsDTO> returnValue = new ArrayList<>();
             return new ResponseEntity<>(returnValue,HttpStatusCode.valueOf(500));
-
         }
     }
 

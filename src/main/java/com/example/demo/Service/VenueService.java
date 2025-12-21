@@ -1,8 +1,12 @@
 package com.example.demo.Service;
 
+import com.example.demo.Models.DTO.ScreenDTO;
 import com.example.demo.Models.DTO.VenueDTO;
+import com.example.demo.Repository.ScreenRepo;
 import com.example.demo.Repository.VenueRepo;
+import com.example.demo.Tables.ScreenEntity;
 import com.example.demo.Tables.VenueEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,8 +19,10 @@ import java.util.Optional;
 @Transactional
 public class VenueService {
     private final VenueRepo venueRepo;
-    public VenueService(VenueRepo venueRepo){
+    public final ScreenRepo screenRepo;
+    public VenueService(VenueRepo venueRepo, ScreenRepo screenRepo){
         this.venueRepo = venueRepo;
+        this.screenRepo = screenRepo;
     }
 
     public List<VenueDTO> getVenues() {
@@ -79,5 +85,14 @@ public class VenueService {
             venueDTOS.add(venueEntity.convertToDTO());
         }
         return venueDTOS;
+    }
+
+    public List<ScreenDTO> getScreenByVenueId(Long venueId) {
+        List<ScreenEntity> screenEntities = screenRepo.findByVenue_Id(venueId);
+        List<ScreenDTO> screenDTOS = new ArrayList<>();
+        for(ScreenEntity screenEntity: screenEntities){
+            screenDTOS.add(screenEntity.convertToDTO());
+        }
+        return screenDTOS;
     }
 }

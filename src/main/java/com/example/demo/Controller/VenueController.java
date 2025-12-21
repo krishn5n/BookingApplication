@@ -1,5 +1,6 @@
 package com.example.demo.Controller;
 
+import com.example.demo.Models.DTO.ScreenDTO;
 import com.example.demo.Models.DTO.VenueDTO;
 import com.example.demo.Service.VenueService;
 import org.springframework.http.HttpStatusCode;
@@ -81,4 +82,17 @@ public class VenueController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('U','A')")
+    @GetMapping("/get/screen/{venueId}")
+    public ResponseEntity<List<ScreenDTO>> getScreenByVenue(@PathVariable Long venueId) {
+        try{
+            List<ScreenDTO> returnValue = venueService.getScreenByVenueId(venueId);
+            return new ResponseEntity<List<ScreenDTO>>(returnValue,HttpStatusCode.valueOf(200));
+        }
+        catch(Exception e){
+            List<ScreenDTO> arr = new ArrayList<>();
+            System.out.println(e.getMessage());
+            return new ResponseEntity<List<ScreenDTO>>(arr,HttpStatusCode.valueOf(500));
+        }
+    }
 }
