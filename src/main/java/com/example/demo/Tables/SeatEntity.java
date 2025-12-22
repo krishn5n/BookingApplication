@@ -1,12 +1,14 @@
 package com.example.demo.Tables;
 
 import com.example.demo.Models.DTO.SeatDTO;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity(name="seats")
 @Table(name = "seats",uniqueConstraints = {@UniqueConstraint(columnNames = {"screen_id","row_number","col_number"})})
@@ -33,6 +35,10 @@ public class SeatEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "screen_id", nullable = false)
     private ScreenEntity screen;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JsonBackReference
+    private List<SeatAvailabilityEntity> seatAvailabilityEntityList;
 
     public SeatEntity(int rowNumber, int colNumber, String seatName, BigDecimal seatPrice, ScreenEntity screen){
         this.rowNumber = rowNumber;

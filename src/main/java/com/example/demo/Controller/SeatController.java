@@ -38,8 +38,7 @@ public class SeatController {
     @PostMapping("/add/{screenId}")
     public ResponseEntity<String> addSeatsForScreen(@PathVariable Long screenId, @RequestBody List<SeatDTO> addDetail){
         try{
-            System.out.println("Adding seats to startus id"+ addDetail);
-
+            seatService.addSeats(screenId,addDetail);
             return new ResponseEntity<String>("Cools",HttpStatusCode.valueOf(200));
         }
         catch (Exception e){

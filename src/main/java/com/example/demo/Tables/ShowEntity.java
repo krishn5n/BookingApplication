@@ -2,6 +2,7 @@ package com.example.demo.Tables;
 
 import com.example.demo.Models.DTO.ShowDTO;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Entity(name="Shows")
 @Table(name="Shows")
@@ -40,6 +42,10 @@ public class ShowEntity {
     @JoinColumn(name="event_id", nullable = false)
     @JsonBackReference
     private EventEntity eventEntity;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<BookingEntity> bookingEntities;
 
     public ShowEntity(LocalDate showDate, LocalTime startTime, LocalTime endTime, ScreenEntity screenEntity, EventEntity eventEntity){
         this.showDate = showDate;

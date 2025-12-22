@@ -1,6 +1,7 @@
 package com.example.demo.Models.DTO;
 
 import com.example.demo.Tables.ScreenEntity;
+import com.example.demo.Tables.SeatEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
