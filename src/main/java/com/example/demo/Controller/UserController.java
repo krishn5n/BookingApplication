@@ -1,8 +1,10 @@
 package com.example.demo.Controller;
 
 import com.example.demo.Models.DTO.UserDTO;
+import com.example.demo.Models.TokenObject;
 import com.example.demo.Service.JWTService;
 import com.example.demo.Service.UserService;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,31 +23,46 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public String signup(@RequestBody UserDTO userdata){
+    public ResponseEntity<TokenObject> signup(@RequestBody UserDTO userdata){
         try {
             System.out.printf("At Singup Controller we have" + userdata);
-            return userService.signupService(userdata);
+            TokenObject returnValue = userService.signupService(userdata);
+            if( returnValue == null || returnValue.getRefreshToken() == null || returnValue.getAccessToken() == null){
+                throw new Exception("There is some error in signup as JWT is empty");
+            }
+            return new ResponseEntity<>(returnValue, HttpStatusCode.valueOf(200));
         }
         catch (Exception e){
-            return e.getMessage();
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(new TokenObject("",""), HttpStatusCode.valueOf(500));
         }
     }
 
     @PostMapping("/signin")
-    public String signIn(@RequestBody UserDTO userDetails){
+    public ResponseEntity<TokenObject> signIn(@RequestBody UserDTO userDetails){
         try {
-            return userService.signInFunction(userDetails);
+            TokenObject returnValue= userService.signInFunction(userDetails);
+            if(returnValue == null){
+                throw new Exception("There is some error in signup as JWT is empty");
+            }
+            return new ResponseEntity<>(returnValue, HttpStatusCode.valueOf(200));
+
         } catch (Exception e) {
-            return e.getMessage();
+            return new ResponseEntity<>(new TokenObject("",""), HttpStatusCode.valueOf(500));
         }
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<String> refresh(@RequestBody UserDTO userDTO) {
-        String newAccessToken = jwtService.refreshAccessToken(userDTO);
-        if(newAccessToken==null){
-            ResponseEntity.status(500);
+    public ResponseEntity<TokenObject> refresh(@RequestBody UserDTO userDTO) {
+        try {
+            String newAccessToken = jwtService.refreshAccessToken(userDTO);
+            if (newAccessToken.isEmpty()) {
+                return new ResponseEntity<>(new TokenObject("",""),HttpStatusCode.valueOf(401));
+            }
+            return new ResponseEntity<>(new TokenObject(newAccessToken,""),HttpStatusCode.valueOf(200));
         }
-        return ResponseEntity.ok(newAccessToken);
+        catch (Exception e){
+            return new ResponseEntity<>(new TokenObject("",""),HttpStatusCode.valueOf(500));
+        }
     }
 }

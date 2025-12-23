@@ -4,10 +4,7 @@ import com.example.demo.Models.DTO.*;
 import com.example.demo.Repository.EventRepo;
 import com.example.demo.Repository.ScreenRepo;
 import com.example.demo.Repository.ShowRepo;
-import com.example.demo.Tables.EventEntity;
-import com.example.demo.Tables.ScreenEntity;
-import com.example.demo.Tables.ShowEntity;
-import com.example.demo.Tables.VenueEntity;
+import com.example.demo.Tables.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,11 +21,13 @@ public class ShowService {
     private final ShowRepo showRepo;
     private final EventRepo eventRepo;
     private final ScreenRepo screenRepo;
+    private final SeatAllocationService seatAllocationService;
 
-    public ShowService(ShowRepo showRepo, EventRepo eventRepo, ScreenRepo screenRepo){
+    public ShowService(ShowRepo showRepo, EventRepo eventRepo, ScreenRepo screenRepo, SeatAllocationService seatAllocationService){
         this.showRepo = showRepo;
         this.eventRepo = eventRepo;
         this.screenRepo = screenRepo;
+        this.seatAllocationService = seatAllocationService;
     }
 
     public List<ShowDTO> getShows() {
@@ -40,15 +39,19 @@ public class ShowService {
         return showDTOS;
     }
 
-    public void addShow(ShowDTO addDetails) {
+    public void addShow(List<ShowDTO> addDetails, Long userId) {
         System.out.println("ShowDTO DTO is "+addDetails);
-        long eventId = addDetails.getEventId();
-        long screenId = addDetails.getScreenId();
-        EventEntity eventEntity = eventRepo.getReferenceById(eventId);
-        ScreenEntity screenEntity = screenRepo.getReferenceById(screenId);
-        ShowEntity showEntity = new ShowEntity(addDetails.getShowDate(),addDetails.getStartTime(),addDetails.getEndTime(),screenEntity,eventEntity);
-        System.out.println("Show Entity is "+showEntity);
-        showRepo.save(showEntity);
+        List<ShowEntity> showEntities = new ArrayList<>();
+        for(ShowDTO showDTO:addDetails){
+            long eventId = showDTO.getEventId();
+            long screenId = showDTO.getScreenId();
+            EventEntity eventEntity = eventRepo.getReferenceById(eventId);
+            ScreenEntity screenEntity = screenRepo.getReferenceById(screenId);
+            ShowEntity showEntity = new ShowEntity(showDTO.getShowDate(),showDTO.getStartTime(),showDTO.getEndTime(),screenEntity,eventEntity);
+            showEntities.add(showEntity);
+        }
+        List<ShowEntity> savedShows = showRepo.saveAll(showEntities);
+        seatAllocationService.createSeat(addDetails,savedShows, userId);
     }
 
     public void deleteShow(ShowDTO deleteDetails) {

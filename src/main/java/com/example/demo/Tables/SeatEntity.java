@@ -38,7 +38,7 @@ public class SeatEntity {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JsonBackReference
-    private List<SeatAvailabilityEntity> seatAvailabilityEntityList;
+    private List<SeatAllocationEntity> seatAvailabilityEntityList;
 
     public SeatEntity(int rowNumber, int colNumber, String seatName, BigDecimal seatPrice, ScreenEntity screen){
         this.rowNumber = rowNumber;

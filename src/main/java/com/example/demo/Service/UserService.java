@@ -1,6 +1,7 @@
 package com.example.demo.Service;
 
 import com.example.demo.Models.DTO.UserDTO;
+import com.example.demo.Models.TokenObject;
 import com.example.demo.Repository.UserRepo;
 import com.example.demo.Tables.User;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,6 +11,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 @Service @Transactional
 public class UserService {
@@ -24,47 +27,31 @@ public class UserService {
         this.jwtService = jwtService;
     }
 
-    public String signupService(UserDTO userdata){
+    public TokenObject signupService(UserDTO userdata){
         try{
             userdata.setPassword_hash(passwordHasher.encode(userdata.getPassword()));
-            System.out.println("Password hash set "+userdata.getPassword_hash());
             User rowValue = userdata.convertToUserEntity();
-            System.out.println("Converted to user entity");
-            rowValue.setRefreshToken(jwtService.createRefreshToken(userdata.getEmail()));
-            System.out.println("Made a refresh token");
+            String refreshToken = jwtService.createRefreshToken(userdata.getEmail());
+            rowValue.setRefreshToken(refreshToken);
             userRepo.save(rowValue);
-            System.out.println("Row value saved");
-            return jwtService.createAccessToken(userdata.getEmail(),userdata.getRole().name());
+            String accessToken = jwtService.createAccessToken(userdata.getEmail(),userdata.getRole().name());
+            return new TokenObject(accessToken,refreshToken);
         }
         catch (Exception e){
-            System.out.println(e);
-            return "";
+            System.out.println(e.getMessage());
+            return null;
         }
     }
 
-    public String signInFunction(UserDTO userData){
-        try{
-            Authentication authentication =  authManager.authenticate(new UsernamePasswordAuthenticationToken(userData.getEmail(), userData.getPassword()));
-            String roleName = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).filter(auth -> !auth.startsWith("FACTOR_")).toList().get(0);
-            String refreshToken = userData.getRefreshToken();
-            if (!authentication.isAuthenticated()) {
-                return null;
-            }
-
-            if(!jwtService.isTokenExpired(refreshToken)) {
-                    return jwtService.createAccessToken(userData.getEmail(), roleName);
-            }
-            else{
-                String newRefreshToken = jwtService.createRefreshToken(userData.getEmail());
-                User rowValue = userData.convertToUserEntity();
-                rowValue.setRefreshToken(newRefreshToken);
-                return jwtService.createAccessToken(userData.getEmail(), roleName);
-            }
-        }
-        catch(Exception e){
-            System.out.println(e);
-            return null;
-        }
+    public TokenObject signInFunction(UserDTO userData){
+        Authentication authentication =  authManager.authenticate(new UsernamePasswordAuthenticationToken(userData.getEmail(), userData.getPassword()));
+        System.out.println(authentication.getAuthorities());
+        String roleName = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).filter(Objects::nonNull).filter(auth -> !auth.startsWith("FACTOR_")).toList().get(0);
+        String refreshToken = jwtService.createRefreshToken(userData.getEmail());
+        String accessToken = jwtService.createAccessToken(userData.getEmail(),roleName);
+        User user = userRepo.findByEmail(userData.getEmail());
+        user.setRefreshToken(refreshToken);
+        return new TokenObject(accessToken,refreshToken);
     }
 
 }

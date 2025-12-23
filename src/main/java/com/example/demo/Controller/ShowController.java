@@ -1,7 +1,6 @@
 package com.example.demo.Controller;
 
 import com.example.demo.Models.DTO.AllDetailsDTO;
-import com.example.demo.Models.DTO.EventDTO;
 import com.example.demo.Models.DTO.ShowDTO;
 import com.example.demo.Service.ShowService;
 import org.springframework.http.HttpStatusCode;
@@ -15,14 +14,13 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/show")
-public class ShowController implements ControllerInterface<ShowDTO> {
+public class ShowController {
     private final ShowService showService;
 
     public ShowController(ShowService showService){
         this.showService = showService;
     }
 
-    @Override
     @PreAuthorize("hasAnyAuthority('A','U')")
     @GetMapping("/get")
     public ResponseEntity<List<ShowDTO>> get() {
@@ -39,12 +37,12 @@ public class ShowController implements ControllerInterface<ShowDTO> {
         }
     }
 
-    @Override
+    //TODO - Test this out
     @PreAuthorize("hasAuthority('A')")
-    @PostMapping("/add")
-    public ResponseEntity<String> add(ShowDTO addDetails) {
+    @PostMapping("/add/{userId}")
+    public ResponseEntity<String> add(@RequestBody List<ShowDTO> addDetails, @PathVariable Long userId) {
         try {
-            showService.addShow(addDetails);
+            showService.addShow(addDetails,userId);
             return new ResponseEntity<>(HttpStatusCode.valueOf(200));
         } catch (Exception e) {
             String retval = "Error at Adding Event " + e.getMessage();
@@ -52,7 +50,6 @@ public class ShowController implements ControllerInterface<ShowDTO> {
         }
     }
 
-    @Override
     @PreAuthorize("hasAuthority('A')")
     @PostMapping("/modify")
     public ResponseEntity<String> modify(Map<String, String> modifyDetails) {
@@ -65,7 +62,6 @@ public class ShowController implements ControllerInterface<ShowDTO> {
         }
     }
 
-    @Override
     @PreAuthorize("hasAuthority('A')")
     @DeleteMapping("/delete")
     public ResponseEntity<String> delete(ShowDTO deleteDetails) {

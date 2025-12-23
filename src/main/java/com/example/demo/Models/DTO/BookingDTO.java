@@ -21,6 +21,11 @@ public class BookingDTO {
     private BigDecimal totalAmount;
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    public BookingDTO(BigDecimal totalAmount, LocalDateTime createdAt){
+        this.totalAmount = totalAmount;
+        this.createdAt =createdAt;
+    }
+
     public BookingEntity convertToEntity(){
         return new BookingEntity();
     }

@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class BookingEntity {
     private LocalDateTime createdAt;
 
     @OneToMany(fetch = FetchType.LAZY)
-    private List<SeatAvailabilityEntity> seatAvailabilityEntityList;
+    private List<SeatAllocationEntity> seatAvailabilityEntityList;
 
     public BookingEntity(User user, ShowEntity show, BigDecimal totalAmount, LocalDateTime createdAt){
         this.user = user;

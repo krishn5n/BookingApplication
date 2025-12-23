@@ -1,4 +1,4 @@
-package com.example.demo.Security;
+package com.example.demo.Service;
 import com.example.demo.Models.UserPrincipleInfo;
 import com.example.demo.Repository.UserRepo;
 import com.example.demo.Tables.User;

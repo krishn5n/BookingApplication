@@ -8,7 +8,14 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class AllDetailsDTO {
-    private LocationDetailsDTO screenEntity;
-    private EventDTO eventEntity;
-    private ShowDTO showEntity;
+    private LocationDetailsDTO locationDetailsDTO;
+    private EventDTO eventDTO;
+    private ShowDTO showDTO;
+    private BookingDTO bookingDTO;
+
+    public AllDetailsDTO(LocationDetailsDTO locationDetailsDTO, EventDTO eventDTO, ShowDTO showDTO){
+        this.locationDetailsDTO = locationDetailsDTO;
+        this.eventDTO = eventDTO;
+        this.showDTO = showDTO;
+    }
 }

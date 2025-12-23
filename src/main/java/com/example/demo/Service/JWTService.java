@@ -1,6 +1,7 @@
 package com.example.demo.Service;
 
 import com.example.demo.Models.DTO.UserDTO;
+import com.example.demo.Models.TokenObject;
 import com.example.demo.Repository.UserRepo;
 import com.example.demo.Tables.User;
 import io.jsonwebtoken.Claims;
@@ -18,15 +19,16 @@ import java.util.function.Function;
 
 @Service
 public class JWTService {
-    private String keyString;
-    private UserRepo userRepo;
+    private final String keyString;
+    private final UserRepo userRepo;
 
     public JWTService(UserRepo userRepo){
         try {
             this.userRepo = userRepo;
             KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256");
             SecretKey secretKey = keyGenerator.generateKey();
-            this.keyString = Base64.getEncoder().encodeToString(secretKey.getEncoded());
+            //this.keyString = Base64.getEncoder().encodeToString(secretKey.getEncoded());
+            this.keyString = "superultrauniquesecretnooneknowssuperultrauniquesecretnooneknows";
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
@@ -120,12 +122,23 @@ public class JWTService {
     }
 
     public String refreshAccessToken(UserDTO userData) {
+        System.out.println("We are inside function "+userData);
         User userEntityData = userRepo.findByEmail(userData.getEmail());
+        String refreshSent = userData.getRefreshToken();
+        String storedToken = userEntityData.getRefreshToken();
+        System.out.println("We have entity as "+storedToken+" "+userEntityData.getRole().name());
+        System.out.println("We have DTO as "+refreshSent);
+        //TODO -> Ban this guy and remove details
+        if(!refreshSent.equals(storedToken)){
+            System.out.println("Not equal pa thambi");
+            throw new RuntimeException("Wrong information given");
+        }
+        System.out.println("We");
         if(!isTokenExpired(userEntityData.getRefreshToken())){
-            return createAccessToken(userData.getEmail(), userData.getRole().name());
+            return createAccessToken(userData.getEmail(), userEntityData.getRole().name());
         }
         else{
-            return null;
+            return "";
         }
     }
 }
