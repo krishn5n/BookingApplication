@@ -10,6 +10,7 @@ import org.springframework.cglib.core.Local;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 public class BookingDTO {
     private Long id;
     private Long screenEntityId;
+    private List<SeatDTO> seats;
     private Long userId;
     private BigDecimal totalAmount;
     private LocalDateTime createdAt = LocalDateTime.now();

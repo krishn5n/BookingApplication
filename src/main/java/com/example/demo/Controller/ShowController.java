@@ -37,7 +37,6 @@ public class ShowController {
         }
     }
 
-    //TODO - Test this out
     @PreAuthorize("hasAuthority('A')")
     @PostMapping("/add/{userId}")
     public ResponseEntity<String> add(@RequestBody List<ShowDTO> addDetails, @PathVariable Long userId) {

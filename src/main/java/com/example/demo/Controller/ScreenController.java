@@ -59,8 +59,6 @@ public class ScreenController implements ControllerInterface<ScreenDTO> {
         }
     }
 
-    //TODO - Understand how to combine the delete functions - cascade in both JPA and Spring
-
     @Override
     @PreAuthorize("hasAuthority('A')")
     @DeleteMapping("/delete")

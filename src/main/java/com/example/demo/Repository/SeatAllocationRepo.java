@@ -28,6 +28,10 @@ public interface SeatAllocationRepo extends JpaRepository<SeatAllocationEntity,L
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT s FROM seatAvailability s " +
             "JOIN FETCH s.seat se " +
+            "JOIN FETCH se.screen sc " +
+            "JOIN FETCH sc.venue v " +
+            "JOIN FETCH s.show sh " +
+            "JOIN FETCH sh.eventEntity e "+
             "WHERE s.show.id = :showId " +
             "AND se.id IN :seatIds " +
             "AND s.user.id = :userId " +

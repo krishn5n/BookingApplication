@@ -47,8 +47,4 @@ public class BookingEntity {
         this.createdAt = createdAt;
     }
 
-    public BookingDTO convertToDTO(){
-        return new BookingDTO(this.id,this.show.getId(),this.user.getId(),this.totalAmount,this.createdAt);
-    }
-
 }

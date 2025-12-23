@@ -1,11 +1,11 @@
 package com.example.demo.Service;
 
-import com.example.demo.Models.DTO.SeatAvailabilityDTO;
-import com.example.demo.Models.DTO.ShowDTO;
+import com.example.demo.Models.DTO.*;
 import com.example.demo.Models.SeatStatusEnum;
 import com.example.demo.Repository.*;
 import com.example.demo.SeatNotAvailableException;
 import com.example.demo.Tables.*;
+import jdk.jfr.Event;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,25 +32,42 @@ public class SeatAllocationService {
     }
 
     @Transactional
-    public void confirmSeat(SeatAvailabilityDTO toLockSeatsDetails) {
+    public AllDetailsDTO confirmSeat(SeatAvailabilityDTO toLockSeatsDetails) {
+        BookingDTO bookingDTO = new BookingDTO();
+        List<SeatDTO> seatList = new ArrayList<>();
         List<SeatAllocationEntity> seatEntities = seatAllocationRepo.findLockedSeatsByUser(toLockSeatsDetails.getShowId(),toLockSeatsDetails.getSeatId(),toLockSeatsDetails.getUserId(), SeatStatusEnum.pending, LocalDateTime.now());
         BigDecimal seatPrice = BigDecimal.ZERO;
         if(seatEntities.size() != toLockSeatsDetails.getSeatId().size()){
             throw new SeatNotAvailableException("Seats have been expired due to time");
         }
         for(SeatAllocationEntity seatEntity: seatEntities){
+            seatList.add(seatEntity.getSeat().convertToDTO());
             seatEntity.setLockExpiry(null);
             seatEntity.setStatus(SeatStatusEnum.booked);
             seatPrice = seatPrice.add(seatEntity.getSeat().getSeatPrice());
         }
 
-        bookingSeat(seatPrice, toLockSeatsDetails);
+        BookingEntity booking = bookingSeat(seatPrice, toLockSeatsDetails);
+        bookingDTO.setTotalAmount(seatPrice);
+        bookingDTO.setId(booking.getId());
+        bookingDTO.setSeats(seatList);
+        bookingDTO.setCreatedAt(booking.getCreatedAt());
+
+        SeatAllocationEntity seat = seatEntities.get(0);
+
+        VenueDTO venueDTO = seat.getSeat().getScreen().getVenue().convertToDTO();
+        ScreenDTO screenDTO = seat.getSeat().getScreen().convertToDTO();
+        LocationDetailsDTO locationDetailsDTO = new LocationDetailsDTO(venueDTO,screenDTO);
+        ShowDTO showDTO =  seat.getShow().convertToDTO();
+        EventDTO eventDTO = seat.getShow().getEventEntity().convertToDTO();
+        AllDetailsDTO allDetailsDTO = new AllDetailsDTO(locationDetailsDTO,eventDTO,showDTO,bookingDTO);
+        return allDetailsDTO;
     }
 
-    public void bookingSeat(BigDecimal seatPrice, SeatAvailabilityDTO lockedSeatInformation){
+    public BookingEntity bookingSeat(BigDecimal seatPrice, SeatAvailabilityDTO lockedSeatInformation){
         User user = userRepo.getReferenceById(lockedSeatInformation.getUserId());
         ShowEntity show = showRepo.getReferenceById(lockedSeatInformation.getShowId());
-        bookingRepo.save(new BookingEntity(user,show,seatPrice,LocalDateTime.now()));
+        return bookingRepo.save(new BookingEntity(user,show,seatPrice,LocalDateTime.now()));
     }
 
 

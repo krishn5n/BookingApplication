@@ -1,6 +1,7 @@
 package com.example.demo.Controller;
 
 import com.example.demo.Models.DTO.AllDetailsDTO;
+import com.example.demo.Models.DTO.BookingDTO;
 import com.example.demo.Models.DTO.SeatAvailabilityDTO;
 import com.example.demo.Service.BookingService;
 import com.example.demo.Service.SeatAllocationService;
@@ -37,12 +38,12 @@ public class BookSeatController {
 
     @PreAuthorize("hasAnyAuthority('U','A')")
     @PostMapping("/confirm")
-    public ResponseEntity<String> confirmSeat(@RequestBody SeatAvailabilityDTO confirmSeatList){
+    public ResponseEntity<AllDetailsDTO> confirmSeat(@RequestBody SeatAvailabilityDTO confirmSeatList){
         try{
-            bookSeatService.confirmSeat(confirmSeatList);
-            return new ResponseEntity<>("Booking Successful", HttpStatusCode.valueOf(200));
+            AllDetailsDTO confirmation = bookSeatService.confirmSeat(confirmSeatList);
+            return new ResponseEntity<>(confirmation, HttpStatusCode.valueOf(200));
         } catch (Exception e) {
-            return new ResponseEntity<>("Booking Failed as eror "+e.getMessage(), HttpStatusCode.valueOf(500));
+            return new ResponseEntity<>(new AllDetailsDTO(), HttpStatusCode.valueOf(500));
         }
     }
 
