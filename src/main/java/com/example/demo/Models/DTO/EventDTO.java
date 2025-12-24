@@ -21,4 +21,13 @@ public class EventDTO {
     public EventEntity convertToEventEntity(){
         return new EventEntity(this.name, this.genre, this.desc, this.language, this.rating,this.duration);
     }
+
+    public String mailbody(){
+        return "Event Name - "+name
+                +"\n Event Genre - "+genre
+                +"\n Event Language - "+language
+                +"\n Event Description - "+desc
+                +"\n";
+
+    }
 }

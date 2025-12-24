@@ -19,4 +19,11 @@ public class VenueDTO {
     public VenueEntity convertToVenueEntity(){
         return new VenueEntity(name,location,city,latitude,longitude);
     }
+
+    public String mailBody(){
+        return "\nVenue name - "+name
+                +"\n City - "+city
+                +"\n Location - "+location
+                +"\n";
+    }
 }

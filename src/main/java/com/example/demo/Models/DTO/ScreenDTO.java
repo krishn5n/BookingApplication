@@ -19,4 +19,9 @@ public class ScreenDTO {
         this.name = name;
         this.venueId = venueId;
     }
+
+    public String mailBody(){
+        return "\nScreen name - "+name
+                +"\n";
+    }
 }

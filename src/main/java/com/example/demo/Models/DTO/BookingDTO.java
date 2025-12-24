@@ -10,6 +10,8 @@ import org.springframework.cglib.core.Local;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -30,5 +32,17 @@ public class BookingDTO {
 
     public BookingEntity convertToEntity(){
         return new BookingEntity();
+    }
+
+    public String mailBody(){
+        DateTimeFormatter customFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm:ss");
+        List<String> seatid = new ArrayList<>();
+        for(SeatDTO seatDTO:seats){
+            seatid.add(seatDTO.getSeatName());
+        }
+        return "\nSeats Booked - " + String.join(",",seatid)
+                +"\n Created at - "+createdAt.format(customFormatter)
+                +"\nTotal Amount - "+totalAmount.toPlainString()
+                +"\n";
     }
 }

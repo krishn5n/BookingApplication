@@ -32,6 +32,7 @@ public interface SeatAllocationRepo extends JpaRepository<SeatAllocationEntity,L
             "JOIN FETCH sc.venue v " +
             "JOIN FETCH s.show sh " +
             "JOIN FETCH sh.eventEntity e "+
+            "JOIN FETCH s.user u "+
             "WHERE s.show.id = :showId " +
             "AND se.id IN :seatIds " +
             "AND s.user.id = :userId " +

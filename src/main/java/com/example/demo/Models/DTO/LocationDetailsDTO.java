@@ -10,4 +10,8 @@ import lombok.Data;
 public class LocationDetailsDTO {
     private VenueDTO venueEntity;
     private ScreenDTO screenEntity;
+
+    public String mailBody(){
+        return venueEntity.mailBody()+screenEntity.mailBody();
+    }
 }

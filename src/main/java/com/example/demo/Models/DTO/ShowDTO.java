@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-
+import java.time.format.DateTimeFormatter;
 
 
 @Data
@@ -28,5 +28,13 @@ public class ShowDTO {
         this.endTime = endTime;
         this.screenId = screenId;
         this.eventId = eventId;
+    }
+
+    public String mailBody(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+        return "\nShow Date "+showDate.toString()
+                +"\nShow Start Time "+startTime.format(formatter)
+                +"\n";
     }
 }

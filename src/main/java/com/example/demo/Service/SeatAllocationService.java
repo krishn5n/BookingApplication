@@ -6,6 +6,7 @@ import com.example.demo.Repository.*;
 import com.example.demo.SeatNotAvailableException;
 import com.example.demo.Tables.*;
 import jdk.jfr.Event;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,13 +23,16 @@ public class SeatAllocationService {
     private final UserRepo userRepo;
     private final ShowRepo showRepo;
     private final SeatAllocationRepo seatAllocationRepo;
+    private final PublisherService publisherService;
 
-    public SeatAllocationService(SeatRepo seatRepo, BookingRepo bookingRepo, UserRepo userRepo, SeatAllocationRepo seatAllocationRepo, ShowRepo showRepo){
+    @Autowired
+    public SeatAllocationService(SeatRepo seatRepo, BookingRepo bookingRepo, UserRepo userRepo, SeatAllocationRepo seatAllocationRepo, ShowRepo showRepo, PublisherService publisherService){
         this.showRepo = showRepo;
         this.seatRepo = seatRepo;
         this.bookingRepo = bookingRepo;
         this.userRepo = userRepo;
         this.seatAllocationRepo = seatAllocationRepo;
+        this.publisherService = publisherService;
     }
 
     @Transactional
@@ -61,6 +65,10 @@ public class SeatAllocationService {
         ShowDTO showDTO =  seat.getShow().convertToDTO();
         EventDTO eventDTO = seat.getShow().getEventEntity().convertToDTO();
         AllDetailsDTO allDetailsDTO = new AllDetailsDTO(locationDetailsDTO,eventDTO,showDTO,bookingDTO);
+
+        MessageDTO messageDTO = new MessageDTO(seat.getUser().getName(),seat.getUser().getEmail(),seat.getUser().getPhone(),allDetailsDTO);
+        publisherService.sendMessage(messageDTO);
+
         return allDetailsDTO;
     }
 
