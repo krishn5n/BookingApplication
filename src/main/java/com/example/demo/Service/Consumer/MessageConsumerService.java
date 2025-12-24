@@ -1,6 +1,5 @@
-package com.example.demo.Service;
+package com.example.demo.Service.Consumer;
 
-import com.example.demo.Models.DTO.AllDetailsDTO;
 import com.example.demo.Models.DTO.MessageDTO;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
