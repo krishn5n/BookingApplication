@@ -44,14 +44,20 @@ public class SeatAllocationService {
         if(seatEntities.size() != toLockSeatsDetails.getSeatId().size()){
             throw new SeatNotAvailableException("Seats have been expired due to time");
         }
+
+
         for(SeatAllocationEntity seatEntity: seatEntities){
-            seatList.add(seatEntity.getSeat().convertToDTO());
-            seatEntity.setLockExpiry(null);
-            seatEntity.setStatus(SeatStatusEnum.booked);
             seatPrice = seatPrice.add(seatEntity.getSeat().getSeatPrice());
         }
 
         BookingEntity booking = bookingSeat(seatPrice, toLockSeatsDetails);
+
+        for(SeatAllocationEntity seatEntity: seatEntities){
+            seatEntity.setLockExpiry(null);
+            seatEntity.setBooking(booking);
+            seatEntity.setStatus(SeatStatusEnum.booked);
+        }
+
         bookingDTO.setTotalAmount(seatPrice);
         bookingDTO.setId(booking.getId());
         bookingDTO.setSeats(seatList);
@@ -104,7 +110,7 @@ public class SeatAllocationService {
         seatAllocationRepo.saveAll(lockedSeats);
     }
 
-    public void createSeat(List<ShowDTO> addDetails, List<ShowEntity> savedShows , Long userId) {
+    public void createSeat(List<ShowDTO> addDetails, List<ShowEntity> savedShows) {
         List<SeatAllocationEntity> seatAllocationEntities = new ArrayList<>();
         Map<Long,List<SeatEntity>> cache = new HashMap<>();
         for(int i=0; i<addDetails.size(); i++){

@@ -13,14 +13,13 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/screen")
-public class ScreenController implements ControllerInterface<ScreenDTO> {
+public class ScreenController {
     private final ScreenService screenService;
 
     public ScreenController(ScreenService screenService){
         this.screenService = screenService;
     }
 
-    @Override
     @PreAuthorize("hasAnyAuthority('U','A')")
     @GetMapping("/get")
     public ResponseEntity<List<ScreenDTO>> get() {
@@ -33,7 +32,6 @@ public class ScreenController implements ControllerInterface<ScreenDTO> {
         }
     }
 
-    @Override
     @PreAuthorize("hasAuthority('A')")
     @PostMapping("/add")
     public ResponseEntity<String> add(ScreenDTO addDetails) {
@@ -46,20 +44,7 @@ public class ScreenController implements ControllerInterface<ScreenDTO> {
         }
     }
 
-    @Override
-    @PreAuthorize("hasAuthority('A')")
-    @PostMapping("/modify")
-    public ResponseEntity<String> modify(Map<String, String> modifyDetails) {
-        try{
-            screenService.updateScreen(modifyDetails);
-            return new ResponseEntity<>("success",HttpStatusCode.valueOf(200));
-        } catch (Exception e) {
-            String retval = "Error at Modifying Event " + e.getMessage();
-            return new ResponseEntity<>(retval,HttpStatusCode.valueOf(500));
-        }
-    }
 
-    @Override
     @PreAuthorize("hasAuthority('A')")
     @DeleteMapping("/delete")
     public ResponseEntity<String> delete(ScreenDTO deleteDetails) {

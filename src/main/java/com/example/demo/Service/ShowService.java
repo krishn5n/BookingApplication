@@ -39,7 +39,7 @@ public class ShowService {
         return showDTOS;
     }
 
-    public void addShow(List<ShowDTO> addDetails, Long userId) {
+    public void addShow(List<ShowDTO> addDetails) {
         System.out.println("ShowDTO DTO is "+addDetails);
         List<ShowEntity> showEntities = new ArrayList<>();
         for(ShowDTO showDTO:addDetails){
@@ -51,13 +51,14 @@ public class ShowService {
             showEntities.add(showEntity);
         }
         List<ShowEntity> savedShows = showRepo.saveAll(showEntities);
-        seatAllocationService.createSeat(addDetails,savedShows, userId);
+        seatAllocationService.createSeat(addDetails,savedShows);
     }
 
     public void deleteShow(ShowDTO deleteDetails) {
         showRepo.findById(deleteDetails.getId()).ifPresent(showRepo::delete);
     }
 
+    //TODO - Not working
     public void updateShow(Map<String, String> modifyDetails) {
         Optional<ShowEntity> potentialRowValue =  showRepo.findById(Long.valueOf(modifyDetails.get("id")));
         if (potentialRowValue.isEmpty()) {

@@ -39,10 +39,6 @@ public class ScreenService {
         screenRepo.save(screenEntity);
     }
 
-    //TODO - Maybe work on the update screen details
-    public void updateScreen(Map<String, String> modifyDetails) {
-        return;
-    }
 
     public void deleteScreen(ScreenDTO screenDTO) {
         screenRepo.findById(screenDTO.getId()).ifPresent(screenRepo::delete);

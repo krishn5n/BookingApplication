@@ -26,6 +26,7 @@ public class DemoApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String[] args) {
+		publisherService.sendMessage(new MessageDTO("Krishna"));
 	}
 
 }

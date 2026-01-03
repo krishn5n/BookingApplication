@@ -21,7 +21,7 @@ public class SeatController {
         this.seatService = seatService;
     }
 
-    //TODO - Handle this
+    //TODO - Handle this to show which seats are booked
     @PreAuthorize("hasAnyAuthority('A','U')")
     @GetMapping("/get/{screenId}")
     public ResponseEntity<List<SeatDTO>> getSeats(@PathVariable Long screenId){

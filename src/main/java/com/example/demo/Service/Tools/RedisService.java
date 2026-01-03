@@ -33,6 +33,7 @@ public class RedisService {
             String jsonValue = mapper.writeValueAsString(toSave);
             redisTemplate.opsForValue().set(key,jsonValue,ttl,TimeUnit.MINUTES);
         } catch (Exception e) {
+            System.out.println("There is an error at set in redisTemplate "+e.getMessage());
             return;
         }
     }

@@ -37,7 +37,7 @@ public class BookingEntity {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "booking")
     private List<SeatAllocationEntity> seatAvailabilityEntityList;
 
     public BookingEntity(User user, ShowEntity show, BigDecimal totalAmount, LocalDateTime createdAt){

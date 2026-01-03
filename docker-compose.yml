@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: bajaj-postgres
+    environment:
+      POSTGRES_DB: bajaj
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: keerkrish
+    ports:
+      - "5431:5432"
+    networks:
+      - project-network
+  
+  redis:
+    image: redis:latest
+    container_name: bajaj_redis_proj
+    ports:
+      - "6378:6379"
+    networks:
+      - project-network
+
+  rabbitmq:
+    image: rabbitmq:management-alpine
+    container_name: rabbitmq_bajaj_proj
+    ports:
+      - "5671:5672"
+      - "15671:15672"  # Management UI
+    networks:
+      - project-network
+
+  springboot-app:
+    build: .
+    container_name: springboot-app
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8080:8080"
+    networks:
+      - project-network
+
+networks:
+  project-network:
+    driver: bridge

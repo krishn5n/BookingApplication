@@ -38,10 +38,10 @@ public class ShowController {
     }
 
     @PreAuthorize("hasAuthority('A')")
-    @PostMapping("/add/{userId}")
-    public ResponseEntity<String> add(@RequestBody List<ShowDTO> addDetails, @PathVariable Long userId) {
+    @PostMapping("/add")
+    public ResponseEntity<String> add(@RequestBody List<ShowDTO> addDetails) {
         try {
-            showService.addShow(addDetails,userId);
+            showService.addShow(addDetails);
             return new ResponseEntity<>(HttpStatusCode.valueOf(200));
         } catch (Exception e) {
             String retval = "Error at Adding Event " + e.getMessage();
@@ -74,7 +74,7 @@ public class ShowController {
         }
     }
 
-    @PreAuthorize("hasAnyAuthority('A','U')")
+        @PreAuthorize("hasAnyAuthority('A','U')")
     @GetMapping("/get/{eventId}")
     public ResponseEntity<List<AllDetailsDTO>> getByName(@PathVariable Long eventId){
         try{
